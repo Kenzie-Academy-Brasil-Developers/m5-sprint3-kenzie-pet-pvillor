@@ -14,7 +14,8 @@ class Animal(models.Model):
         choices=SexAnimal.choices,
         default=SexAnimal.NAO_INFORMADO
         )
-    group = models.ForeignKey("groups.Group", on_delete=models.CASCADE, related_name="animals")
+    group = models.ForeignKey("groups.Group", on_delete=models.CASCADE, related_name="animals", null=True)
+    traits = models.ManyToManyField('traits.Trait', related_name='animals')
 
     def __repr__(self) -> str:
         return f'Animal {self.id} - {self.name}'
