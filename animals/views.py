@@ -1,3 +1,4 @@
+import math
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView, Request, Response, status
 
@@ -9,6 +10,9 @@ class AnimalView(APIView):
     def get(self, request: Request) -> Response:
         animals = Animal.objects.all()
         serializer = AnimalSerializer(animals, many=True)
+
+        for animal in animals:
+            animal.age_in_human_years = 16 * math.log(animal.age) + 31
 
         return Response(serializer.data)
 
@@ -28,6 +32,18 @@ class AnimalDetailView(APIView):
 
         serializer = AnimalSerializer(animal, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+
         serializer.save()
 
         return Response(serializer.data)
+
+    def get(self, request: Request, animal_id: int):
+        animal = get_object_or_404(Animal, id=animal_id)
+        animal.age_in_human_years = 16 * math.log(animal.age) + 31
+        serializer = AnimalSerializer(animal)
+        return Response(serializer.data)
+
+    def delete(self, request: Request, animal_id: int):
+        animal = get_object_or_404(Animal, id=animal_id)
+        animal.delete()
+        return Response(status=204)
