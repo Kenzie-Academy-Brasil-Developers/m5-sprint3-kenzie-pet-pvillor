@@ -1,4 +1,4 @@
-from rest_framework.exceptions import ValidationErrorPatch
+from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 from traits.serializers import TraitSerializer
 from groups.serializers import GroupSerializer
@@ -7,6 +7,9 @@ from groups.models import Group
 from rest_framework import status
 import math
 from .models import Animal, SexAnimal
+
+class ValidationErrorPatch(ValidationError):
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
 
 class AnimalSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
